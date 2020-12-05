@@ -1,0 +1,48 @@
+---
+- name: installation des serveur
+  hosts: localhost
+  become: yes
+  connection: local
+  tasks:
+    #Install using the repository  https://docs.docker.com/engine/install/ubuntu/
+    #SET UP THE REPOSITORY
+    
+    - name: Uninstall old versions
+      command: sudo apt-get remove docker docker-engine docker.io containerd runc
+    - name: Installation of docker packages
+      apt: name={{item}} update_cache=no state=latest
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+    - name: Add Docker official GPG key
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+      # become: yes
+      # become_user: root
+    - name: Verify that you now have the key with the fingerprint
+      command: sudo apt-key fingerprint 0EBFCD88
+    # - name: set up the stable repository
+      # command: sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
+
+    #INSTALL DOCKER ENGINE
+    - name:  install the latest version of Docker Engine and containerd
+      apt: name={{item}} update_cache=no state=latest
+      with_items:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+    #can be avoid
+    - name: Fingerprint
+      command: apt-cache madison docker-ce
+
+    - name: Verify that Docker Engine is installed correctly
+      command: sudo docker run hello-world
+    - name: Nodejs installation front launch
+      command: 
+    - name: Maven installation
+      command: sudo apt install mvn
+...
+#sudo ansible-playbook -i hosts, playbook.yml --connection=local
+#for execution

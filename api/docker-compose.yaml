@@ -1,0 +1,29 @@
+version: "3.3"
+services:
+  db:
+    image: mysql
+    ports:
+      - "3306:3306"
+      # bash -c "npm install && ng serve --host 0.0.0.0 --port 4200"
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+  etherpad:
+    image: etherpad/etherpad:stable
+    ports:
+      - "9001:9001"
+    volumes:
+      - ./APIKEY.txt:/opt/etherpad-lite/APIKEY.txt
+  mail:
+    image: bytemark/smtp
+    restart: always
+    ports:
+      - "2525:25"
+  # angular-serv: # The name of the service
+  #   container_name: angularcontainer  # Container name
+  #   build: ../front # Location of our Dockerfile
+  #   volumes: # Volume binding
+  #     - '../front:/usr/src/app' 
+  #   ports: 
+  #     - '4200:4200' # Port mapping
+  #   command: > 
+  #     bash -c "npm install && npm start"
