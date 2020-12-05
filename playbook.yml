@@ -39,10 +39,30 @@
 
     - name: Verify that Docker Engine is installed correctly
       command: sudo docker run hello-world
-    - name: Nodejs installation front launch
-      command: 
-    - name: Maven installation
-      command: sudo apt install mvn
+    
+    #For the front management
+    - name: Nodejs installation for front launch
+      command: sudo apt install nodejs
+
+    - name: Npm installation for node management
+      command: sudo apt install npm
+
+    #for application launching
+    - name: Maven installation for api executing
+      command: sudo apt install maven
+    
+    #launching docker and after the api
+    - name: Launching docker
+      command: cd ./api/ & sudo docker-compose up --detach
+
+    #launching the api
+    - name: Launching the api
+      command: mvn compile quarkus:dev
+    #front launching
+    - name: packages installation
+      command: cd ../front/ & npm i
+    - name: Launching the front
+      command: npm start
 ...
 #sudo ansible-playbook -i hosts, playbook.yml --connection=local
 #for execution
