@@ -3,12 +3,16 @@
   hosts: localhost
   become: yes
   connection: local
+  vars:
+    NODEJS_VERSION: "8"
+    ansible_distribution_release: "xenial" #trusty
   tasks:
     #Install using the repository  https://docs.docker.com/engine/install/ubuntu/
     #SET UP THE REPOSITORY
     
     - name: Uninstall old versions
       command: sudo apt-get remove docker docker-engine docker.io containerd runc
+      ignore_errors: yes
     - name: Installation of docker packages
       apt: name={{item}} update_cache=no state=latest
       with_items:
@@ -28,11 +32,13 @@
 
     #INSTALL DOCKER ENGINE
     - name:  install the latest version of Docker Engine and containerd
-      apt: name={{item}} update_cache=no state=latest
-      with_items:
-        - docker-ce
-        - docker-ce-cli
-        - containerd.io
+      apt: name=docker.io update_cache=no state=latest
+    - name: update
+      command: sudo apt update
+    - name: install docker-compose
+      shell: sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    - name: Access
+      shell: sudo chmod +x /usr/local/bin/docker-compose
     #can be avoid
     - name: Fingerprint
       command: apt-cache madison docker-ce
@@ -41,19 +47,42 @@
       command: sudo docker run hello-world
     
     #For the front management
-    - name: Nodejs installation for front launch
-      command: sudo apt install nodejs
+    #- name: Nodejs installation for front launch
+    #  shell: sudo apt install nodejs
+    - name: Install the gpg key for nodejs LTS
+      apt_key:
+        url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+        state: present
 
-    - name: Npm installation for node management
-      command: sudo apt install npm
+    - name: Install the nodejs LTS repos
+      apt_repository:
+        repo: "deb https://deb.nodesource.com/node_{{ NODEJS_VERSION }}.x {{ ansible_distribution_release }} main"
+        state: present
+        update_cache: yes
+
+    - name: Install the nodejs
+      apt:
+        name: nodejs
+        state: present
+
+    #- name: Npm installation for node management
+     # command: sudo apt install npm
 
     #for application launching
-    - name: Maven installation for api executing
-      command: sudo apt install maven
+    - name: Install Maven using Ansible
+      become: yes
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+           - maven
     
     #launching docker and after the api
-    - name: Launching docker
-      command: cd ./api/ & sudo docker-compose up --detach
+    - name: Launching 
+      shell: cd ./api & touch test
+    - name: detach docker
+      shell: sudo docker-compose up --detach
 
     #launching the api
     - name: Launching the api
