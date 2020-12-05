@@ -80,18 +80,18 @@
     
     #launching docker and after the api
     - name: Launching 
-      shell: cd ./api & touch test
+      command: chdir=api/ touch kam_test
     - name: detach docker
-      shell: sudo docker-compose up --detach
+      shell: chdir=api/ sudo docker-compose up --detach
 
     #launching the api
     - name: Launching the api
-      command: mvn compile quarkus:dev
+      command: chdir=api/ mvn compile quarkus:dev
     #front launching
     - name: packages installation
-      command: cd ../front/ & npm i
+      command: chdir=front/ npm i
     - name: Launching the front
-      command: npm start
+      command: chdir=front/ npm start
 ...
 #sudo ansible-playbook -i hosts, playbook.yml --connection=local
 #for execution
