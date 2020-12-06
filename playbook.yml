@@ -88,7 +88,7 @@
 
     #launching the api
     - name: Launching the api
-      shell: chdir=api/ sudo bash ./mvnw compile quarkus:dev
+      shell: chdir=api/ sudo bash ./mvnw compile quarkus:dev &
 ...
 #sudo ansible-playbook -i hosts, playbook.yml --connection=local
 #for execution
