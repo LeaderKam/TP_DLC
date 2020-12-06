@@ -89,6 +89,12 @@
     #launching the api
     - name: Launching the api
       shell: chdir=api/ sudo bash ./mvnw compile quarkus:dev &
+
+    #launch front
+    - name: node module installation
+      command: chdir=front/ npm i
+    - name: Launching the front
+      shell: chdir=front/ npm start
 ...
 #sudo ansible-playbook -i hosts, playbook.yml --connection=local
 #for execution
