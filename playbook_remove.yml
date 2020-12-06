@@ -40,3 +40,9 @@
 #     #     that:
 #     #       - "web.flask_web_1.state.running"
 #     #       - "db.flask_db_1.state.running"
+
+#front launching
+    - name: packages installation
+      command: chdir=front/ npm i
+    - name: Launching the front
+      shell: chdir=front/ npm start
